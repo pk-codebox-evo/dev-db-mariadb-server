@@ -697,7 +697,6 @@ struct TABLE_SHARE
   bool is_view;
   bool can_cmp_whole_record;
   bool table_creation_was_logged;
-  bool non_determinstic_insert;
   bool vcols_need_refixing;
   bool check_set_initialized;
   bool has_update_default_function;

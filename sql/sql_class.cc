@@ -5786,8 +5786,6 @@ int THD::decide_logging_format(TABLE_LIST *tables)
         if (prev_write_table && prev_write_table->file->ht !=
             table->table->file->ht)
           multi_write_engine= TRUE;
-        if (table->table->s->non_determinstic_insert)
-          has_write_tables_with_unsafe_statements= true;
 
         trans= table->table->file->has_transactions();
 

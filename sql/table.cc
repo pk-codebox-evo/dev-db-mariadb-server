@@ -2761,12 +2761,6 @@ bool fix_session_vcol_expr_for_read(THD *thd, Field *field,
     the virtual column vcol_field. The expression is used to compute the
     values of this column.
 
-  @note
-   If the virtual column has stored_in_db set and it uses non deterministic
-   function then table->non_determinstic_insert is set.
-   This is used in replication to ensure that row based replication is used
-   for inserts.
-
   @retval
     TRUE           An error occurred, something was wrong with the function
   @retval
@@ -2815,13 +2809,6 @@ static bool fix_and_check_vcol_expr(THD *thd, TABLE *table,
     DBUG_RETURN(1);
   }
   vcol->flags= res.errors;
-
-  /*
-    Mark what kind of default / virtual fields the table has
-  */
-  if (vcol->stored_in_db &&
-      vcol->flags & (VCOL_NON_DETERMINISTIC | VCOL_SESSION_FUNC))
-    table->s->non_determinstic_insert= true;
 
   if (vcol->flags & VCOL_SESSION_FUNC)
     table->s->vcols_need_refixing= true;
