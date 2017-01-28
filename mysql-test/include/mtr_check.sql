@@ -102,5 +102,6 @@ BEGIN
   select * from information_schema.session_variables
     where variable_name = 'debug_sync';
 
-END||
+  FLUSH NO_WRITE_TO_BINLOG TABLES;
 
+END||
