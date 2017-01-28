@@ -1,6 +1,14 @@
 --source include/have_unzip.inc
 --source include/have_innodb.inc
 --source include/have_innodb_16k.inc
+--source include/not_windows.inc
+
+--error 0,1,127,255
+--exec unzip -v > /dev/null 2>&1 
+if ($sys_errno)
+{
+  --skip "Could not find unzip"
+}
 
 let bugdir= $MYSQLTEST_VARDIR/tmp/log_corruption;
 --mkdir $bugdir
