@@ -13,6 +13,8 @@
 call mtr.add_suppression("Column count of mysql.proc is wrong. Expected 20, found 19. The table is probably corrupted");
 call mtr.add_suppression("Stored routine .test...bug14233_[123].: invalid value in column mysql.proc");
 
+FLUSH NO_WRITE_TO_BINLOG TABLES;
+
 # Backup proc table
 let $MYSQLD_DATADIR= `select @@datadir`;
 flush table mysql.proc;

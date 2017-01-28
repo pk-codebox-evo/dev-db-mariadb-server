@@ -10,6 +10,8 @@
 --echo # --
 --echo
 
+FLUSH NO_WRITE_TO_BINLOG TABLES;
+
 --disable_warnings
 DROP DATABASE IF EXISTS mysql_test;
 --enable_warnings

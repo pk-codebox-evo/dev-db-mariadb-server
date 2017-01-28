@@ -1,5 +1,6 @@
 call mtr.add_suppression("Column count of mysql.proc is wrong. Expected 20, found 19. The table is probably corrupted");
 call mtr.add_suppression("Stored routine .test...bug14233_[123].: invalid value in column mysql.proc");
+FLUSH NO_WRITE_TO_BINLOG TABLES;
 flush table mysql.proc;
 use test;
 drop procedure if exists bug14233;
@@ -147,6 +148,7 @@ alter table mysql.proc drop column type;
 drop database mysqltest;
 Warnings:
 Error	1805	Column count of mysql.proc is wrong. Expected 20, found 19. The table is probably corrupted
+Error	4027	Got an error evaluating stored expression current_timestamp()
 # Restore mysql.proc.
 drop table mysql.proc;
 #
@@ -164,6 +166,7 @@ ALTER TABLE mysql.proc MODIFY comment CHAR (32);
 DROP DATABASE db1;
 Warnings:
 Error	1728	Cannot load from mysql.proc. The table is probably corrupted
+Error	4027	Got an error evaluating stored expression current_timestamp()
 # Restore mysql.proc
 DROP TABLE mysql.proc;
 RENAME TABLE proc_backup TO mysql.proc;

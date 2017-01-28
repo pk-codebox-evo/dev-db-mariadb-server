@@ -3,6 +3,7 @@
 # -- Bug#43138: DROP DATABASE failure does not clean up message list.
 # --
 
+FLUSH NO_WRITE_TO_BINLOG TABLES;
 DROP DATABASE IF EXISTS mysql_test;
 
 CREATE DATABASE mysql_test;
@@ -17,6 +18,7 @@ Warnings:
 Error	1051	Unknown table 't1'
 Error	1051	Unknown table 't2'
 Error	1051	Unknown table 't3'
+Error	4027	Got an error evaluating stored expression current_timestamp()
 
 SET SESSION debug_dbug= "-d,bug43138";
 
