@@ -5082,28 +5082,31 @@ void do_shutdown_server(struct st_command *command)
     die("mysql_shutdown failed");
 
   /* Check that server dies */
-  while(timeout--){
-    if (my_kill(pid, 0) < 0){
-      DBUG_PRINT("info", ("Process %d does not exist anymore", pid));
-      DBUG_VOID_RETURN;
-    }
-    DBUG_PRINT("info", ("Sleeping, timeout: %ld", timeout));
-    my_sleep(1000000L);
-  }
+  if (timeout) 
+  {
+      while(timeout--){
+        if (my_kill(pid, 0) < 0){
+          DBUG_PRINT("info", ("Process %d does not exist anymore", pid));
+          DBUG_VOID_RETURN;
+        }
+        DBUG_PRINT("info", ("Sleeping, timeout: %ld", timeout));
+        my_sleep(1000000L);
+      }
 
-  /* Abort the server */
-  DBUG_PRINT("info", ("Killing server with SIGABRT, pid: %d", pid));
-  (void)my_kill(pid, 6);
+      /* Abort the server */
+      DBUG_PRINT("info", ("Killing server with SIGABRT, pid: %d", pid));
+      (void)my_kill(pid, 6);
 
-  timeout= 60;
-  /* Check that server dies now */
-  while(timeout--){
-    if (my_kill(pid, 0) < 0){
-      DBUG_PRINT("info", ("Process %d does not exist anymore", pid));
-      DBUG_VOID_RETURN;
-    }
-    DBUG_PRINT("info", ("Sleeping, timeout: %ld", timeout));
-    my_sleep(1000000L);
+      timeout= 60;
+      /* Check that server dies now */
+      while(timeout--){
+        if (my_kill(pid, 0) < 0){
+          DBUG_PRINT("info", ("Process %d does not exist anymore", pid));
+          DBUG_VOID_RETURN;
+        }
+        DBUG_PRINT("info", ("Sleeping, timeout: %ld", timeout));
+        my_sleep(1000000L);
+      }
   }
 
   /* Kill the server */
