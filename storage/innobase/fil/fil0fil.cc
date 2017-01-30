@@ -1051,6 +1051,7 @@ fil_write_zeros(
 	return(err);
 }
 
+
 /** Try to extend a tablespace.
 @param[in,out]	space	tablespace to be extended
 @param[in,out]	node	last file of the tablespace
@@ -1135,10 +1136,9 @@ fil_space_extend_must_retry(
 				" Operating system error number "
 				<< ret << ". Check"
 				" that the disk is not full or a disk quota"
-				" exceeded. Make sure the file system supports"
-				" this function. Some operating system error"
+				" exceeded. Some operating system error"
 				" numbers are described at " REFMAN
-				" operating-system-error-codes.html";
+				"operating-system-error-codes.html";
 		} else
 #endif
 		if (DB_SUCCESS != fil_write_zeros(
@@ -3730,7 +3730,9 @@ fil_ibd_create(
         */
         int	ret = posix_fallocate(file, 0, size * UNIV_PAGE_SIZE);
 
-        if (ret != 0) {
+        if (ret == 0) {
+		success = true;
+	} else if (ret != EINVAL) {
           	ib::error() <<
 			"posix_fallocate(): Failed to preallocate"
 			" data for file " << path
@@ -3739,13 +3741,10 @@ fil_ibd_create(
 			<< " Operating system error number " << ret
 			<< ". Check"
 			" that the disk is not full or a disk quota"
-			" exceeded. Make sure the file system supports"
-			" this function. Some operating system error"
+			" exceeded. Some operating system error"
 			" numbers are described at " REFMAN
-			" operating-system-error-codes.html";
-		} else {
-			success = true;
-		}
+			"operating-system-error-codes.html";
+	}
 #endif /* HAVE_POSIX_FALLOCATE */
 
 	if (!success) {
