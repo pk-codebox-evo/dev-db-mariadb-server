@@ -10736,6 +10736,7 @@ uint check_join_cache_usage(JOIN_TAB *tab,
   uint bufsz= 4096;
   JOIN_CACHE *prev_cache=0;
   JOIN *join= tab->join;
+  MEM_ROOT *root= join->thd->mem_root;
   uint cache_level= tab->used_join_cache_level;
   bool force_unlinked_cache=
          !(join->allowed_join_cache_types & JOIN_CACHE_INCREMENTAL_BIT);
@@ -10855,7 +10856,7 @@ uint check_join_cache_usage(JOIN_TAB *tab,
   case JT_ALL:
     if (cache_level == 1)
       prev_cache= 0;
-    if ((tab->cache= new JOIN_CACHE_BNL(join, tab, prev_cache)) &&
+    if ((tab->cache= new (root) JOIN_CACHE_BNL(join, tab, prev_cache)) &&
          !tab->cache->init(options & SELECT_DESCRIBE))
     {
       tab->icp_other_tables_ok= FALSE;
@@ -10890,7 +10891,7 @@ uint check_join_cache_usage(JOIN_TAB *tab,
         goto no_join_cache;
       if (cache_level == 3)
         prev_cache= 0;
-      if ((tab->cache= new JOIN_CACHE_BNLH(join, tab, prev_cache)) &&
+      if ((tab->cache= new (root) JOIN_CACHE_BNLH(join, tab, prev_cache)) &&
           !tab->cache->init(options & SELECT_DESCRIBE))
       {
         tab->icp_other_tables_ok= FALSE;        
@@ -10911,7 +10912,7 @@ uint check_join_cache_usage(JOIN_TAB *tab,
       {
         if (cache_level == 5)
           prev_cache= 0;
-        if ((tab->cache= new JOIN_CACHE_BKA(join, tab, flags, prev_cache)) &&
+        if ((tab->cache= new (root) JOIN_CACHE_BKA(join, tab, flags, prev_cache)) &&
             !tab->cache->init(options & SELECT_DESCRIBE))
           return (6 - MY_TEST(!prev_cache));
         goto no_join_cache;
@@ -10920,10 +10921,10 @@ uint check_join_cache_usage(JOIN_TAB *tab,
       {
         if (cache_level == 7)
           prev_cache= 0;
-        if ((tab->cache= new JOIN_CACHE_BKAH(join, tab, flags, prev_cache)) &&
+        if ((tab->cache= new (root) JOIN_CACHE_BKAH(join, tab, flags, prev_cache)) &&
             !tab->cache->init(options & SELECT_DESCRIBE))
 	{
-         tab->idx_cond_fact_out= FALSE;
+          tab->idx_cond_fact_out= FALSE;
           return (8 - MY_TEST(!prev_cache));
         }
         goto no_join_cache;
