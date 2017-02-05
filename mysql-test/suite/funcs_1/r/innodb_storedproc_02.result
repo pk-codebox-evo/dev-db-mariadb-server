@@ -28,31 +28,11 @@ USE db_storedproc;
 create table t7 (f1 char(20), f2 char(25), f3 date, f4 int)
 engine = <engine_to_be_tested>;
 load data infile '<MYSQLTEST_VARDIR>/std_data/funcs_1/t7.txt' into table t7;
-Warnings:
-Warning	1265	Data truncated for column 'f3' at row 1
-Warning	1265	Data truncated for column 'f3' at row 2
-Warning	1265	Data truncated for column 'f3' at row 3
-Warning	1265	Data truncated for column 'f3' at row 4
-Warning	1265	Data truncated for column 'f3' at row 5
-Warning	1265	Data truncated for column 'f3' at row 6
-Warning	1265	Data truncated for column 'f3' at row 7
-Warning	1265	Data truncated for column 'f3' at row 8
-Warning	1265	Data truncated for column 'f3' at row 9
-Warning	1265	Data truncated for column 'f3' at row 10
+ERROR 22007: Incorrect date value: '' for column 'f3' at row 1
 create table t8 (f1 char(20), f2 char(25), f3 date, f4 int)
 engine = <engine_to_be_tested>;
 load data infile '<MYSQLTEST_VARDIR>/std_data/funcs_1/t7.txt' into table t8;
-Warnings:
-Warning	1265	Data truncated for column 'f3' at row 1
-Warning	1265	Data truncated for column 'f3' at row 2
-Warning	1265	Data truncated for column 'f3' at row 3
-Warning	1265	Data truncated for column 'f3' at row 4
-Warning	1265	Data truncated for column 'f3' at row 5
-Warning	1265	Data truncated for column 'f3' at row 6
-Warning	1265	Data truncated for column 'f3' at row 7
-Warning	1265	Data truncated for column 'f3' at row 8
-Warning	1265	Data truncated for column 'f3' at row 9
-Warning	1265	Data truncated for column 'f3' at row 10
+ERROR 22007: Incorrect date value: '' for column 'f3' at row 1
 create table t9(f1 int, f2 char(25), f3 int) engine = <engine_to_be_tested>;
 load data infile '<MYSQLTEST_VARDIR>/std_data/funcs_1/t9.txt' into table t9;
 create table t10(f1 char(20),f2 char(25),f3 date,f4 int,f5 char(25),f6 int)
@@ -110,21 +90,7 @@ set @v2 = y;
 SELECT '1.2', @v1, @v2;
 END begin_label//
 CALL sp1();
-1.1	x	y
-1.1	a	a
-5	x	y
-5	g	h
-4	x	y
-4	e	f
-3	x	y
-3	c	d
-2	x	y
-2	a	b
-1.2	@v1	@v2
-1.2	1	2
-Warnings:
-Warning	1265	Data truncated for column 'x' at row 1
-Warning	1265	Data truncated for column 'y' at row 1
+ERROR 22001: Data too long for column 'x' at row 1
 DROP PROCEDURE IF EXISTS sp1;
 
 Testcase 3.1.2.26:
@@ -754,44 +720,41 @@ set @x=1;
 END//
 INSERT INTO temp VALUES('0', NULL);
 CALL sp0();
-Warnings:
-Warning	1265	Data truncated for column 'f1' at row 1
-Warning	1265	Data truncated for column 'f2' at row 1
+ERROR 22001: Data too long for column 'f1' at row 1
 SELECT @done, @x;
 @done	@x
-0	1
+0	0
 INSERT INTO temp VALUES('1', NULL);
 CALL sp1();
+ERROR 22001: Data too long for column 'f1' at row 1
 SELECT @done, @x;
 @done	@x
-1	1
+0	0
 INSERT INTO temp VALUES('2', NULL);
 CALL sp2();
+ERROR 22001: Data too long for column 'f1' at row 1
 SELECT @done, @x;
 @done	@x
-1	1
+0	0
 INSERT INTO temp VALUES('3', NULL);
 CALL sp3();
+ERROR 22001: Data too long for column 'f1' at row 1
 SELECT @done, @x;
 @done	@x
-1	0
+0	0
 INSERT INTO temp VALUES('4', NULL);
 CALL sp4();
+ERROR 22001: Data too long for column 'f1' at row 1
 SELECT @done, @x;
 @done	@x
-1	0
+0	0
 SELECT * FROM temp;
 f1	f2
 0	NULL
-x	y
 1	NULL
-x	y
 2	NULL
-x	y
 3	NULL
-x	y
 4	NULL
-x	y
 DROP PROCEDURE sp1;
 DROP PROCEDURE sp2;
 DROP PROCEDURE sp3;
